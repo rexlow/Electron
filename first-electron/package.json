@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-packager . RexStocks --platform=darwin --arch=x64 --version=1.0.0 --overwrite"
   },
   "author": "Rex",
   "license": "ISC",

@@ -2,11 +2,85 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello Electron</title>
   </head>
-  <body>
-    <p>
-      Sample electron app, still learning though ☄️
-    </p>
+
+  <style>
+    body {
+      background: #192633;
+      color: white;
+      font-family: monospace;
+      text-align: center;
+    }
+    .the-price {
+      font-size: 26px
+    }
+    .up-down {
+      padding: 10px
+    }
+    .up {
+      color: green;
+    }
+    .noChange {
+      color: grey;
+    }
+    .down {
+      color: red;
+    }
+  </style>
+
+  <body style="-webkit-app-region: drag">
+    <h3>Current share price: Apple Inc.</h3>
+    <div class="the-price" id="price"></div>
+    <div class="up-down" id="priceHistory"></div>
+    <div class="date-time" id="currentDate"></div>
   </body>
+
+  <script>
+    var request = require('request');
+
+    setInterval(function() {
+      request('https://finance.google.com/finance/info?client=ig&q=aapl', function(error, response, body) {
+        body = body.slice(3);
+        body = JSON.parse(body);
+        newPrice(body);
+      });
+    }, 1000);
+
+
+    var lastPrice;
+    function newPrice(data) {
+      currentPrice = data[0]["l"];
+      var priceHistory = document.getElementById("priceHistory");
+
+      if (lastPrice < currentPrice) {
+        var newArrowText = "⬆";
+        var wrap = document.createElement("span");
+        wrap.className = "▲";
+      } else if (lastPrice == currentPrice) {
+        var newArrowText = " - ";
+        var wrap = document.createElement("span");
+        wrap.className = "noChange";
+      } else {
+        var newArrowText = "▼";
+        var wrap = document.createElement("span");
+        wrap.className = "down";
+      }
+
+
+      priceHistory.appendChild(wrap);
+      var textNode = document.createTextNode(newArrowText);
+      wrap.appendChild(textNode);
+
+      var nodeList = priceHistory.getElementsByTagName("span").length;
+      if (nodeList == 6) {
+        priceHistory.children[0].remove();
+      }
+
+      document.getElementById("price").innerHTML = "$ " + currentPrice;
+      lastPrice = currentPrice;
+    }
+
+    var currentTime = new Date();
+    document.getElementById("currentDate").innerHTML = "As of " + currentTime;
+  </script>
 </html>

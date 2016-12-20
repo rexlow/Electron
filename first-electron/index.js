@@ -1,15 +1,16 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 const url = require('url')
-const tray = require('./tray')
 
 let win
 
 function createWindow () {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    backgroundColor: '#FFF'
+    width: 400,
+    height: 150,
+    backgroundColor: '#192633',
+    frame: false,
+    center: true,
   })
 
   win.loadURL(url.format({
@@ -18,6 +19,8 @@ function createWindow () {
     slashes: true
   }))
 
+  // win.webContents.openDevTools();
+
   win.on('close', () => {
     win = null //dereference the window object
   })
@@ -25,12 +28,9 @@ function createWindow () {
 
 app.on('ready', () => {
   mainWindow = createWindow()
-  tray.create(mainWindow)
 })
 
 app.on('activate', () => {
-  // On macOS it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (win == null) {
     createWindow()
   }
