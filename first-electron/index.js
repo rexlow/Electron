@@ -1,10 +1,17 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 const url = require('url')
+const tray = require('./tray')
 
 let win
+
 function createWindow () {
-  win = new BrowserWindow({ width: 800, height: 600})
+  win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    backgroundColor: '#FFF'
+  })
+
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
@@ -17,10 +24,8 @@ function createWindow () {
 }
 
 app.on('ready', () => {
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  createWindow()
+  mainWindow = createWindow()
+  tray.create(mainWindow)
 })
 
 app.on('activate', () => {
@@ -29,4 +34,8 @@ app.on('activate', () => {
   if (win == null) {
     createWindow()
   }
+})
+
+app.on('window-all-closed', () => {
+  app.quit()
 })
